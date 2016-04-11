@@ -52,7 +52,7 @@ def _prefix_each(pref, x):
 
 def run_compose(*commands):
 	target = env.get('compose_file')
-	machine = env.get('compose_machine')
+	machine = env.get('docker_machine')
 
 	options = parse(target)
 	if not machine and 'use-docker-machine' in options:
@@ -72,6 +72,9 @@ def do(*args, **kwargs):
 	if 'config' in kwargs:
 		env['compose_file'] = kwargs['config']
 		del kwargs['config']
+	if 'machine' in kwargs:
+		env['docker_machine'] = kwargs['machine']
+		del kwargs['machine']
 
 	if kwargs:
 		args = list(args) + map(lambda x: "%s=%s" % x, kwargs.iteritems())
