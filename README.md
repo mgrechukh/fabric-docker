@@ -44,3 +44,20 @@ Compose supports overrides ( https://docs.docker.com/compose/extends/ ). We do a
 ```
 
 Parameters passed to compose will include both configuration files in correct order. And also staging will use another machine
+
+And we can use docker directly within machine-environment defined by compose file
+
+```
+fab do:docker,"ps -a"
+```
+
+Certain commands are specific for docker, so can be used without especially asking:
+
+```
+fab do:images
+```
+
+```
+fab do:info,config=preprod.yml
+
+```
