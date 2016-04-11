@@ -1,6 +1,7 @@
 from fabric.api import env, local, prefix, settings, hide
 from fabric.utils import abort
 import fabric.colors
+import os
 
 def parse(compose_file):
 	options = {}
@@ -25,7 +26,7 @@ def get_machine_env(machine):
 	if _env.succeeded:
 		return filter(lambda x: x and not x.startswith('#'), _env.stdout.splitlines())
 	else:
-		fabric.utils.abort(_env.stderr)
+		abort(_env.stderr)
 
 def docker_machine(machine):
 	docker_env = get_machine_env('-u') # just assure we are not going to break something sensitive
@@ -50,9 +51,12 @@ def _prefix(pref, x):
 def _prefix_each(pref, x):
 	return _merge(["%s %s" % (pref, i) for i in x])
 
-def run_compose(*commands):
-	target = env.get('compose_file')
+def run_compose(*commands, **kwargs):
+	target = env.get('compose_file') or 'docker-compose.yml'
 	machine = env.get('docker_machine')
+
+	if not os.path.isfile(target):
+		abort("Compose file not found %s" % target)
 
 	options = parse(target)
 	if not machine and 'use-docker-machine' in options:
@@ -62,16 +66,20 @@ def run_compose(*commands):
 	if 'use-override' in options:
 		compose_files.insert(0, options['use-override'])
 
-	compose_prefix = "docker-compose" + _prefix_each('-f', compose_files)
+	if kwargs.get('direct'):
+		command = "docker"
+	else:
+		command = "docker-compose" + _prefix_each('-f', compose_files)
 
 	with docker_machine(machine):
 		for c in commands:
-			local(compose_prefix + ' ' + c)
+			local(command + ' ' + c)
 
 def do(*args, **kwargs):
 	if 'config' in kwargs:
 		env['compose_file'] = kwargs['config']
 		del kwargs['config']
+
 	if 'machine' in kwargs:
 		env['docker_machine'] = kwargs['machine']
 		del kwargs['machine']
@@ -79,7 +87,13 @@ def do(*args, **kwargs):
 	if kwargs:
 		args = list(args) + map(lambda x: "%s=%s" % x, kwargs.iteritems())
 
-	if args[0] == 'pullup': # let define combos!
+	if args[0] in ('info', 'images'): # why not use plain docker commands?
+		run_compose(_merge(args), direct = True)
+
+	elif args[0] == 'docker': # do anything, we will just set machine environment
+		run_compose(_merge(args[1:]), direct = True)
+
+	elif args[0] == 'pullup': # let define combos!
 		args = args[1:]
 		run_compose(_prefix('pull', args), _prefix('up -d', args))
 
