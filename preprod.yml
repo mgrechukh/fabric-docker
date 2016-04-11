@@ -1,4 +1,4 @@
-# @satelliz-use-docker-machine: swarm@preprod-batch2
+# @satelliz-use-docker-machine: swarm@pixar1
 
 services:
   web:
