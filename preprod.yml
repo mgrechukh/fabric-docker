@@ -1,0 +1,10 @@
+# @satelliz-use-docker-machine: swarm@preprod-batch2
+
+services:
+  web:
+    image: my.private.registry:webapp:latest
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=PREPROD

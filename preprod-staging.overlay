@@ -1,0 +1,7 @@
+# @satelliz-use-docker-machine: lumen-dev
+# @satelliz-use-override: preprod.yml
+
+services:
+  web:
+    environment:
+      - ENVIRONMENT=STAGE
