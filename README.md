@@ -58,7 +58,7 @@ Certain commands not used by compose, so they passed to docker directly without 
 fab do:images
 ```
 
-Again, machine environment still taken from default docker-compose. But we can specify machine directly:
+Again, machine environment still taken from default docker-compose.yml. But we can specify machine directly:
 
 
 ```
