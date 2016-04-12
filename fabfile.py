@@ -87,8 +87,12 @@ def do(*args, **kwargs):
 	if kwargs:
 		args = list(args) + map(lambda x: "%s=%s" % x, kwargs.iteritems())
 
-	if args[0] in ('info', 'images'): # why not use plain docker commands?
+	if args[0] in ('info', 'images', 'exec'): # why not use plain docker commands?
 		run_compose(_merge(args), direct = True)
+
+	elif args[0] == 'getshell': # fat-and-sweet
+		# @TODO: if compose service passed instead of container id, lookup for container
+		run_compose("exec -it %s /bin/sh" % args[1], direct = True)
 
 	elif args[0] == 'docker': # do anything, we will just set machine environment
 		run_compose(_merge(args[1:]), direct = True)
