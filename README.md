@@ -45,19 +45,23 @@ Compose supports overrides ( https://docs.docker.com/compose/extends/ ). We do a
 
 Parameters passed to compose will include both configuration files in correct order. And also staging will use another machine
 
-And we can use docker directly within machine-environment defined by compose file
+And we can use docker directly within machine-environment defined by compose file. We don't even specify it here, since docker-compose.yml used by default:
 
 ```
 fab do:docker,"ps -a"
+
 ```
 
-Certain commands are specific for docker, so can be used without especially asking:
+Certain commands not used by compose, so they passed to docker directly without especially asking:
 
 ```
 fab do:images
 ```
 
+Again, machine environment still taken from default docker-compose. But we can specify machine directly:
+
+
 ```
-fab do:info,config=preprod.yml
+fab do:info,machine=swarm@aeterna
 
 ```
