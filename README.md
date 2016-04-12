@@ -52,6 +52,12 @@ fab do:docker,"ps -a"
 
 ```
 
+Or by using wrapper task:
+
+``
+fab docker:"ps -a",config=preprod.yml
+```
+
 Certain commands not used by compose, so they passed to docker directly without especially asking:
 
 ```

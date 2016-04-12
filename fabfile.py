@@ -103,3 +103,8 @@ def do(*args, **kwargs):
 
 	else:
 		run_compose(_merge(args))
+
+def docker(*args, **kwargs):
+	args = list(args)
+	args.insert(0, 'docker')
+	return do(*args, **kwargs)
